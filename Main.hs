@@ -1,6 +1,7 @@
 module Main where
 
 import Control.Applicative
+import Control.Arrow
 import Control.Monad (liftM, ap)
 
 -- Monad State implementation
@@ -10,6 +11,12 @@ newtype State s a = State
 
 returnSt :: a -> State s a
 returnSt a = State $ \s -> (a, s)
+
+evalState :: State s a -> (s -> a)
+evalState m = \s -> fst $ runState m s
+
+execState :: State s a -> (s -> s)
+execState m = \s -> snd $ runState m s
 
 bindSt :: State s a -> (a -> State s b) -> State s b
 bindSt m k = State $ \s -> let (a, s') = runState m s
@@ -50,6 +57,7 @@ playGame = do
 
 loadGame :: Game
 loadGame = Game { players = ["David", "Javier", "Mario"] }
+
 
 main :: IO ()
 main = do
