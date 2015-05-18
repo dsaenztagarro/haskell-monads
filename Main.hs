@@ -53,6 +53,6 @@ loadGame = Game { players = ["David", "Javier", "Mario"] }
 
 main :: IO ()
 main = do
-    putStrLn $ show loadGame
-    putStrLn "Loading game"
-    putStrLn "Game loop"
+    let (action, gameState) = runState playGame $ loadGame
+    putStrLn $ "Action: " ++ show action
+    putStrLn $ "GameState: " ++ show gameState
