@@ -1,13 +1,11 @@
 module Main where
 
-import Control.Applicative
-import Control.Arrow
+import Control.Applicative (Applicative(..))
 import Control.Monad (liftM, ap)
 
 -- Monad State implementation
 
-newtype State s a = State
-    { runState :: s -> (a, s) }
+newtype State s a = State { runState :: s -> (a, s) }
 
 returnSt :: a -> State s a
 returnSt a = State $ \s -> (a, s)
@@ -58,9 +56,19 @@ playGame = do
 loadGame :: Game
 loadGame = Game { players = ["David", "Javier", "Mario"] }
 
-
 main :: IO ()
 main = do
     let (action, gameState) = runState playGame $ loadGame
     putStrLn $ "Action: " ++ show action
     putStrLn $ "GameState: " ++ show gameState
+
+-- Example
+
+type Stack = [Int]
+
+checkStack :: State Stack ()
+checkStack = do
+    stack <- getSt
+    if length stack > 3
+    then return()
+    else putSt $ [2]
