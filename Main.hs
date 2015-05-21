@@ -72,3 +72,26 @@ checkStack = do
     if length stack > 3
     then return()
     else putSt $ [2]
+
+-- Random number generation
+
+data CountRandom = CountRandom {
+      crGen :: StdGen
+    , crCount :: Int
+    } deriving (Show)
+
+type RandomState = State CountRandom
+
+getRandom :: Random a => RandomState a
+getRandom = do
+    st <- getSt
+    let (val, gen') = random $ crGen st
+    putSt CountRandom { crGen = gen', crCount = crCount st + 1 }
+    return val
+
+threeRandoms :: RandomState (Int, Int, Int)
+threeRandoms = do
+    a <- getRandom
+    b <- getRandom
+    c <- getRandom
+    return (a, b, c)
