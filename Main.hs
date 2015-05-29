@@ -95,3 +95,27 @@ threeRandoms = do
     b <- getRandom
     c <- getRandom
     return (a, b, c)
+
+-- Reader Monad
+
+newtype Reader e a = R { runReader :: e -> a }
+
+returnR :: a -> Reader e a
+returnR a = R $ \_ -> a
+
+bindR :: Reader e a -> (a -> Reader e b) -> Reader e b
+bindR m k = R $ \e -> (runReader $ k (runReader m $ e)) e
+
+ask :: Reader e e
+ask = R id
+
+instance Monad (Reader e) where
+    return = returnR
+    (>>=) = bindR
+
+instance Functor (Reader s) where
+    fmap = liftM
+
+instance Applicative (Reader s) where
+    pure = returnR
+    (<*>) = ap
